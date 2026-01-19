@@ -10,8 +10,9 @@ import (
 
 func NewPostgresDB() (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
-		"host=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta",
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta",
 		config.GetConfig().DBHost,
+		config.GetConfig().DBUsername,
 		config.GetConfig().DBPassword,
 		config.GetConfig().DBName,
 		config.GetConfig().DBPort,

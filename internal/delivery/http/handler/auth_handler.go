@@ -2,6 +2,7 @@ package handler
 
 import (
 	"buytun-backend/internal/delivery/http/dto"
+	"buytun-backend/internal/helpers/response"
 	"buytun-backend/internal/usecase"
 	"net/http"
 
@@ -26,7 +27,14 @@ func (h *AuthHandler) Register() echo.HandlerFunc {
 	return func(c *echo.Context) error {
 		var req dto.RegisterRequest
 		if err := c.Bind(&req); err != nil {
-
+			return response.Error(
+				c,
+				http.StatusBadRequest,
+				err.Error(),
+				nil,
+			)
 		}
+
+		return nil
 	}
 }
