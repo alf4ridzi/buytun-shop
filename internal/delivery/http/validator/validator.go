@@ -12,6 +12,6 @@ func New() *CustomValidator {
 	}
 }
 
-func (cv *CustomValidator) Validate(i interface{}) error {
+func (cv *CustomValidator) Validate(i any) error {
 	return cv.validator.Struct(i)
 }
