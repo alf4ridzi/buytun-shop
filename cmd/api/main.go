@@ -2,10 +2,13 @@ package main
 
 import (
 	"buytun-backend/internal/config"
+	"buytun-backend/internal/delivery/http"
+	"buytun-backend/internal/handler"
 	"buytun-backend/internal/infrastructure/postgresql"
+	"buytun-backend/internal/repository"
+	"buytun-backend/internal/usecase"
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/labstack/echo/v5"
 )
@@ -30,9 +33,18 @@ func main() {
 
 	e := echo.New()
 
-	e.GET("/", func(c *echo.Context) error {
-		return c.String(http.StatusOK, "ok")
-	})
+	// repo
+	userRepo := repository.NewUserRepository(db)
+	// auth
+	authUsecase := usecase.NewUserUsecase(userRepo)
+	authHandler := handler.NewAuthHandler(authUsecase)
+	authRoute := http.NewAuthRoute(authHandler)
+
+	route := http.Routes{
+		AuthRoute: authRoute,
+	}
+
+	route.Register(e)
 
 	if err := e.Start(fmt.Sprintf(":%d", cfg.AppPort)); err != nil {
 		log.Fatalf("failed to start server : %v", err)
