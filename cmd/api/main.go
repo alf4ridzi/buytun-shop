@@ -19,6 +19,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
 	e := echo.New()
 
 	e.GET("/", func(c *echo.Context) error {
