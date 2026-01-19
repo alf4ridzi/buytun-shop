@@ -4,6 +4,7 @@ import (
 	"buytun-backend/internal/config"
 	"buytun-backend/internal/delivery/http/handler"
 	http "buytun-backend/internal/delivery/http/routes"
+	"buytun-backend/internal/delivery/http/validator"
 	"buytun-backend/internal/infrastructure/postgresql"
 	"buytun-backend/internal/repository"
 	"buytun-backend/internal/usecase"
@@ -36,6 +37,8 @@ func main() {
 	}
 
 	e := echo.New()
+
+	e.Validator = validator.New()
 
 	// repo
 	userRepo := repository.NewUserRepository(db)

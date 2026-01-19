@@ -32,6 +32,14 @@ func (h *AuthHandler) Register(c *echo.Context) error {
 		)
 	}
 
+	if err := c.Validate(&req); err != nil {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+	}
+
 	err := h.uc.Register(c.Request().Context(), req)
 
 	if err != nil {
