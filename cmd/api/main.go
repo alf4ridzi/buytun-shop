@@ -40,7 +40,7 @@ func main() {
 	// repo
 	userRepo := repository.NewUserRepository(db)
 	// auth
-	authUsecase := usecase.NewUserUsecase(userRepo)
+	authUsecase := usecase.NewAuthUsecase(userRepo)
 	authHandler := handler.NewAuthHandler(authUsecase)
 	authRoute := http.NewAuthRoute(authHandler)
 

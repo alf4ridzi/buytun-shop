@@ -17,24 +17,34 @@ func NewAuthHandler(authUsecase usecase.AuthUsecase) *AuthHandler {
 	return &AuthHandler{uc: authUsecase}
 }
 
-func (h *AuthHandler) Login() echo.HandlerFunc {
-	return func(c *echo.Context) error {
-		return c.String(http.StatusOK, "ok")
-	}
+func (h *AuthHandler) Login(c *echo.Context) error {
+	return nil
 }
 
-func (h *AuthHandler) Register() echo.HandlerFunc {
-	return func(c *echo.Context) error {
-		var req dto.RegisterRequest
-		if err := c.Bind(&req); err != nil {
-			return response.Error(
-				c,
-				http.StatusBadRequest,
-				err.Error(),
-				nil,
-			)
-		}
+func (h *AuthHandler) Register(c *echo.Context) error {
+	var req dto.RegisterRequest
 
-		return nil
+	if err := c.Bind(&req); err != nil {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
 	}
+
+	err := h.uc.Register(c.Request().Context(), req)
+
+	if err != nil {
+		return response.Error(
+			c,
+			http.StatusInternalServerError,
+			err.Error(),
+		)
+	}
+
+	return response.Success(
+		c,
+		"berhasil register",
+		nil,
+	)
 }

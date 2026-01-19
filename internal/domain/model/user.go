@@ -1,6 +1,8 @@
 package model
 
 import (
+	"buytun-backend/internal/utils"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -15,4 +17,15 @@ type User struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	u.Username = strings.TrimSpace(u.Username)
+	hashed, err := utils.HashPassword(u.Password)
+	if err != nil {
+		return err
+	}
+
+	u.Password = hashed
+	return nil
 }

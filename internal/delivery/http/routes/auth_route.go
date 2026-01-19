@@ -18,6 +18,6 @@ func NewAuthRoute(handler *handler.AuthHandler) *AuthRoute {
 
 func (r *AuthRoute) Register(rg *echo.Group) {
 	auth := rg.Group("/auth")
-	auth.POST("/login", r.Handler.Login())
-
+	auth.POST("/login", r.Handler.Login)
+	auth.POST("/register", r.Handler.Register)
 }

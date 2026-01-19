@@ -12,6 +12,6 @@ func Success(c *echo.Context, message string, data any) error {
 	return JSON(c, 200, true, message, data)
 }
 
-func Error(c *echo.Context, code int, message string, data any) error {
-	return JSON(c, code, false, message, data)
+func Error(c *echo.Context, code int, message string) error {
+	return JSON(c, code, false, message, nil)
 }

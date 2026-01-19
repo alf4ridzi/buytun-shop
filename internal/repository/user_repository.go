@@ -1,8 +1,15 @@
 package repository
 
-import "gorm.io/gorm"
+import (
+	"buytun-backend/internal/domain/model"
+	"context"
 
-type UserRepository interface{}
+	"gorm.io/gorm"
+)
+
+type UserRepository interface {
+	Create(ctx context.Context, user *model.User) error
+}
 
 type userRepositoryImpl struct {
 	DB *gorm.DB
@@ -10,4 +17,8 @@ type userRepositoryImpl struct {
 
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepositoryImpl{DB: db}
+}
+
+func (r *userRepositoryImpl) Create(ctx context.Context, user *model.User) error {
+	return r.DB.WithContext(ctx).Create(user).Error
 }
