@@ -1,7 +1,7 @@
 package http
 
 import (
-	"buytun-backend/internal/handler"
+	"buytun-backend/internal/delivery/http/handler"
 
 	"github.com/labstack/echo/v5"
 )

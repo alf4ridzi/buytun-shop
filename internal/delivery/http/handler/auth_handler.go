@@ -20,3 +20,9 @@ func (h *AuthHandler) Login() echo.HandlerFunc {
 		return c.String(http.StatusOK, "ok")
 	}
 }
+
+func (h *AuthHandler) Register() echo.HandlerFunc {
+	return func(c *echo.Context) error {
+		return c.String(http.StatusOK, "ok")
+	}
+}

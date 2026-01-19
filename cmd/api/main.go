@@ -2,8 +2,8 @@ package main
 
 import (
 	"buytun-backend/internal/config"
-	"buytun-backend/internal/delivery/http"
-	"buytun-backend/internal/handler"
+	"buytun-backend/internal/delivery/http/handler"
+	http "buytun-backend/internal/delivery/http/routes"
 	"buytun-backend/internal/infrastructure/postgresql"
 	"buytun-backend/internal/repository"
 	"buytun-backend/internal/usecase"
@@ -28,6 +28,10 @@ func main() {
 	}
 
 	if err := sqlDB.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := postgresql.Migration(db); err != nil {
 		log.Fatal(err)
 	}
 
