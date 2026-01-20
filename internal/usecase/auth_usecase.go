@@ -2,14 +2,12 @@ package usecase
 
 import (
 	"buytun-backend/internal/delivery/http/dto"
+	"buytun-backend/internal/domain"
 	"buytun-backend/internal/domain/model"
 	"buytun-backend/internal/repository"
 	"buytun-backend/internal/utils"
 	"context"
-	"errors"
 	"strings"
-
-	"gorm.io/gorm"
 )
 
 type AuthUsecase interface {
@@ -31,7 +29,6 @@ func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto
 
 	if strings.Contains(req.Identifier, "@") {
 		user, err = u.userRepository.FindByEmail(ctx, req.Identifier)
-
 	} else {
 		user, err = u.userRepository.FindByUsername(ctx, req.Identifier)
 	}
@@ -41,16 +38,11 @@ func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto
 	}
 
 	if user == nil {
-		return nil, gorm.ErrRecordNotFound
+		return nil, domain.ErrInvalidAuth
 	}
 
-	hashed, err := utils.HashPassword(req.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	if !utils.ValidatePasswordHash(hashed, user.Password) {
-		return nil, errors.New("invalid username/email/password")
+	if !utils.ValidatePasswordHash(user.Password, req.Password) {
+		return nil, domain.ErrInvalidAuth
 	}
 
 	resp := &dto.UserResponse{

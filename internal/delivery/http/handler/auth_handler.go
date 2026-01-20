@@ -2,8 +2,11 @@ package handler
 
 import (
 	"buytun-backend/internal/delivery/http/dto"
+	"buytun-backend/internal/domain"
 	"buytun-backend/internal/helpers/response"
 	"buytun-backend/internal/usecase"
+	"errors"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v5"
@@ -37,16 +40,27 @@ func (h *AuthHandler) Login(c *echo.Context) error {
 
 	resp, err := h.uc.Login(c.Request().Context(), req)
 	if err != nil {
-		return response.Error(
-			c,
-			http.StatusInternalServerError,
-			err.Error(),
-		)
+		switch {
+		case errors.Is(err, domain.ErrInvalidAuth):
+			return response.Error(
+				c,
+				http.StatusForbidden,
+				err.Error(),
+			)
+		default:
+			log.Println(err)
+			return response.Error(
+				c,
+				http.StatusInternalServerError,
+				"internal server error",
+			)
+		}
+
 	}
 
 	return response.Success(
 		c,
-		"ok",
+		"berhasil login",
 		resp,
 	)
 }
