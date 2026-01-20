@@ -18,7 +18,37 @@ func NewAuthHandler(authUsecase usecase.AuthUsecase) *AuthHandler {
 }
 
 func (h *AuthHandler) Login(c *echo.Context) error {
-	return nil
+	var req dto.LoginRequest
+	if err := c.Bind(&req); err != nil {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+	}
+
+	if err := c.Validate(&req); err != nil {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+	}
+
+	resp, err := h.uc.Login(c.Request().Context(), req)
+	if err != nil {
+		return response.Error(
+			c,
+			http.StatusInternalServerError,
+			err.Error(),
+		)
+	}
+
+	return response.Success(
+		c,
+		"ok",
+		resp,
+	)
 }
 
 func (h *AuthHandler) Register(c *echo.Context) error {
