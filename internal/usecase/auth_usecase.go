@@ -8,11 +8,15 @@ import (
 	"buytun-backend/internal/utils"
 	"buytun-backend/internal/utils/tokenutil"
 	"context"
+	"errors"
 	"strconv"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
 type AuthUsecase interface {
+	Refresh(ctx context.Context, req dto.RefreshRequest) (*dto.AccessTokenResponse, error)
 	Login(ctx context.Context, req dto.LoginRequest) (*dto.AuthTokenResponse, error)
 	Register(ctx context.Context, req dto.RegisterRequest) error
 }
@@ -25,8 +29,47 @@ func NewAuthUsecase(userRepository repository.UserRepository) AuthUsecase {
 	return &authUsecaseImpl{userRepository: userRepository}
 }
 
-func (u *authUsecaseImpl) Refresh(ctx context.Context, req dto.RefreshRequest) {
+func (u *authUsecaseImpl) Refresh(ctx context.Context, req dto.RefreshRequest) (
+	*dto.AccessTokenResponse,
+	error) {
 
+	claims, err := tokenutil.ParseRefreshToken(req.Refresh)
+	if err != nil {
+		return nil, err
+	}
+
+	userID64, err := strconv.ParseUint(claims.Subject, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	userID := uint(userID64)
+
+	user, err := u.userRepository.FindByID(ctx, userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, domain.ErrUserNotFound
+		}
+
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, domain.ErrUserNotFound
+	}
+
+	userIDString := strconv.Itoa(int(user.ID))
+
+	tokenAccess, err := tokenutil.CreateUserAccessToken(userIDString, user.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &dto.AccessTokenResponse{
+		Access: tokenAccess,
+	}
+
+	return resp, nil
 }
 
 func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto.AuthTokenResponse, error) {

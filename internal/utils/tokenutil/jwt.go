@@ -63,7 +63,7 @@ func ParseRefreshToken(tokenJwt string) (*RefreshClaims, error) {
 			return nil, errors.New("error signing method")
 		}
 
-		return config.GetConfig().JwtRefreshSecret, nil
+		return []byte(config.GetConfig().JwtRefreshSecret), nil
 	})
 
 	if err != nil {

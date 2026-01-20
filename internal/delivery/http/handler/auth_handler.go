@@ -38,10 +38,25 @@ func (h *AuthHandler) Refresh(c *echo.Context) error {
 		)
 	}
 
+	resp, err := h.uc.Refresh(
+		c.Request().Context(),
+		req,
+	)
+
+	if err != nil {
+		log.Println(err)
+
+		return response.Error(
+			c,
+			http.StatusInternalServerError,
+			"internal server error",
+		)
+	}
+
 	return response.Success(
 		c,
 		"ok",
-		nil,
+		resp,
 	)
 }
 

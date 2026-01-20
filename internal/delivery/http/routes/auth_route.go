@@ -20,4 +20,5 @@ func (r *AuthRoute) Register(rg *echo.Group) {
 	auth := rg.Group("/auth")
 	auth.POST("/login", r.Handler.Login)
 	auth.POST("/register", r.Handler.Register)
+	auth.POST("/refresh", r.Handler.Refresh)
 }
