@@ -5,11 +5,9 @@ import (
 	"buytun-backend/internal/domain"
 	"buytun-backend/internal/helpers/response"
 	"buytun-backend/internal/usecase"
-	"buytun-backend/internal/utils/tokenutil"
 	"errors"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v5"
 )
@@ -20,6 +18,31 @@ type AuthHandler struct {
 
 func NewAuthHandler(authUsecase usecase.AuthUsecase) *AuthHandler {
 	return &AuthHandler{uc: authUsecase}
+}
+
+func (h *AuthHandler) Refresh(c *echo.Context) error {
+	var req dto.RefreshRequest
+	if err := c.Bind(&req); err != nil {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			"failed to bind",
+		)
+	}
+
+	if err := c.Validate(req); err != nil {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			"bad request",
+		)
+	}
+
+	return response.Success(
+		c,
+		"ok",
+		nil,
+	)
 }
 
 func (h *AuthHandler) Login(c *echo.Context) error {
@@ -40,7 +63,7 @@ func (h *AuthHandler) Login(c *echo.Context) error {
 		)
 	}
 
-	user, err := h.uc.Login(c.Request().Context(), req)
+	resp, err := h.uc.Login(c.Request().Context(), req)
 	if err != nil {
 		switch {
 		case errors.Is(err, domain.ErrInvalidAuth):
@@ -58,23 +81,6 @@ func (h *AuthHandler) Login(c *echo.Context) error {
 			)
 		}
 
-	}
-
-	userID := strconv.Itoa(int(user.ID))
-
-	token, err := tokenutil.CreateUserAuthToken(userID, user.Name)
-	log.Println(err)
-
-	if err != nil {
-		return response.Error(
-			c,
-			http.StatusInternalServerError,
-			"internal server error",
-		)
-	}
-
-	resp := dto.AuthTokenResponse{
-		Access: token,
 	}
 
 	return response.Success(

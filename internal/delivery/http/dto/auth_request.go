@@ -11,3 +11,7 @@ type LoginRequest struct {
 	Identifier string `json:"identifier" validate:"required"`
 	Password   string `json:"password" validate:"required"`
 }
+
+type RefreshRequest struct {
+	Refresh string `json:"refresh" validate:"required"`
+}

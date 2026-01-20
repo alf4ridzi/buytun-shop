@@ -8,6 +8,7 @@ import (
 )
 
 type UserRepository interface {
+	IsExistByID(ctx context.Context, id uint) (bool, error)
 	FindByUsernameRaw(ctx context.Context, username string) (*model.User, error)
 	FindByEmailRaw(ctx context.Context, email string) (*model.User, error)
 	FindByEmail(ctx context.Context, email string) (*model.User, error)
@@ -21,6 +22,19 @@ type userRepositoryImpl struct {
 
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepositoryImpl{DB: db}
+}
+
+func (r *userRepositoryImpl) IsExistByID(ctx context.Context, id uint) (bool, error) {
+	var count int64
+	tx := r.DB.WithContext(ctx).
+		Where("id = ?", id).
+		Count(&count)
+
+	if tx.Error != nil {
+		return false, tx.Error
+	}
+
+	return count > 0, nil
 }
 
 func (r *userRepositoryImpl) FindByUsernameRaw(ctx context.Context, username string) (*model.User, error) {

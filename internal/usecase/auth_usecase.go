@@ -6,12 +6,14 @@ import (
 	"buytun-backend/internal/domain/model"
 	"buytun-backend/internal/repository"
 	"buytun-backend/internal/utils"
+	"buytun-backend/internal/utils/tokenutil"
 	"context"
+	"strconv"
 	"strings"
 )
 
 type AuthUsecase interface {
-	Login(ctx context.Context, req dto.LoginRequest) (*model.User, error)
+	Login(ctx context.Context, req dto.LoginRequest) (*dto.AuthTokenResponse, error)
 	Register(ctx context.Context, req dto.RegisterRequest) error
 }
 
@@ -23,7 +25,11 @@ func NewAuthUsecase(userRepository repository.UserRepository) AuthUsecase {
 	return &authUsecaseImpl{userRepository: userRepository}
 }
 
-func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*model.User, error) {
+func (u *authUsecaseImpl) Refresh(ctx context.Context, req dto.RefreshRequest) {
+
+}
+
+func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto.AuthTokenResponse, error) {
 	var user *model.User
 	var err error
 
@@ -45,7 +51,24 @@ func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*mod
 		return nil, domain.ErrInvalidAuth
 	}
 
-	return user, nil
+	userID := strconv.Itoa(int(user.ID))
+
+	accessToken, err := tokenutil.CreateUserAccessToken(userID, user.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, err := tokenutil.CreateUserRefreshToken(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &dto.AuthTokenResponse{
+		Access:  accessToken,
+		Refresh: refreshToken,
+	}
+
+	return resp, nil
 }
 
 func (u *authUsecaseImpl) Register(ctx context.Context, req dto.RegisterRequest) error {
