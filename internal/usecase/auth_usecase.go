@@ -11,7 +11,7 @@ import (
 )
 
 type AuthUsecase interface {
-	Login(ctx context.Context, req dto.LoginRequest) (*dto.UserResponse, error)
+	Login(ctx context.Context, req dto.LoginRequest) (*model.User, error)
 	Register(ctx context.Context, req dto.RegisterRequest) error
 }
 
@@ -23,7 +23,7 @@ func NewAuthUsecase(userRepository repository.UserRepository) AuthUsecase {
 	return &authUsecaseImpl{userRepository: userRepository}
 }
 
-func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto.UserResponse, error) {
+func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*model.User, error) {
 	var user *model.User
 	var err error
 
@@ -45,13 +45,7 @@ func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto
 		return nil, domain.ErrInvalidAuth
 	}
 
-	resp := &dto.UserResponse{
-		Name:     user.Name,
-		Email:    user.Email,
-		Username: user.Username,
-	}
-
-	return resp, nil
+	return user, nil
 }
 
 func (u *authUsecaseImpl) Register(ctx context.Context, req dto.RegisterRequest) error {

@@ -8,12 +8,14 @@ import (
 )
 
 type Env struct {
-	AppPort    int    `mapstructure:"APP_PORT"`
-	DBHost     string `mapstructure:"DB_HOST"`
-	DBName     string `mapstructure:"DB_NAME"`
-	DBUsername string `mapstructure:"DB_USERNAME"`
-	DBPassword string `mapstructure:"DB_PASSWORD"`
-	DBPort     int    `mapstructure:"DB_PORT"`
+	AppPort               int    `mapstructure:"APP_PORT"`
+	DBHost                string `mapstructure:"DB_HOST"`
+	DBName                string `mapstructure:"DB_NAME"`
+	DBUsername            string `mapstructure:"DB_USERNAME"`
+	DBPassword            string `mapstructure:"DB_PASSWORD"`
+	DBPort                int    `mapstructure:"DB_PORT"`
+	JwtSecret             string `mapstructure:"JWT_SECRET"`
+	JwtAccessTokenExpired int    `"mapstructure:JWT_ACCESS_TOKEN_EXPIRED"`
 }
 
 var cfg Env
