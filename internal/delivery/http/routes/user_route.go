@@ -1,4 +1,4 @@
-package http
+package routes
 
 import (
 	"buytun-backend/internal/delivery/http/handler"
