@@ -115,6 +115,24 @@ func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto
 }
 
 func (u *authUsecaseImpl) Register(ctx context.Context, req dto.RegisterRequest) error {
+	emailExist, err := u.userRepository.IsExistByEmail(ctx, req.Email)
+	if err != nil {
+		return err
+	}
+
+	if !emailExist {
+		return domain.ErrEmailAlreadyExist
+	}
+
+	usernameExist, err := u.userRepository.IsExistByUsername(ctx, req.Username)
+	if err != nil {
+		return err
+	}
+
+	if !usernameExist {
+		return domain.ErrUsernameAlreadyExist
+	}
+
 	user := &model.User{
 		Name:     req.Name,
 		Email:    req.Email,

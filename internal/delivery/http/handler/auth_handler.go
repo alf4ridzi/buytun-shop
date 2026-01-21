@@ -87,6 +87,18 @@ func (h *AuthHandler) Login(c *echo.Context) error {
 				http.StatusForbidden,
 				err.Error(),
 			)
+		case errors.Is(err, domain.ErrEmailAlreadyExist):
+			return response.Error(
+				c,
+				http.StatusConflict,
+				err.Error(),
+			)
+		case errors.Is(err, domain.ErrUsernameAlreadyExist):
+			return response.Error(
+				c,
+				http.StatusConflict,
+				err.Error(),
+			)
 		default:
 			log.Println(err)
 			return response.Error(
