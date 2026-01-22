@@ -34,6 +34,8 @@ func LoadEnv() *Env {
 	viper.SetDefault("DB_USERNAME", "root")
 	viper.SetDefault("DB_PASSWORD", "")
 	viper.SetDefault("DB_PORT", 5432)
+	viper.SetDefault("JWT_ACCESS_TOKEN_EXPIRED", 48)
+	viper.SetDefault("JWT_REFRESH_TOKEN_EXPIRED", 168)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if errors.Is(err, viper.ConfigFileNotFoundError{}) {
