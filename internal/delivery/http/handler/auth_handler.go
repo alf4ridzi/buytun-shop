@@ -87,18 +87,6 @@ func (h *AuthHandler) Login(c *echo.Context) error {
 				http.StatusForbidden,
 				err.Error(),
 			)
-		case errors.Is(err, domain.ErrEmailAlreadyExist):
-			return response.Error(
-				c,
-				http.StatusConflict,
-				err.Error(),
-			)
-		case errors.Is(err, domain.ErrUsernameAlreadyExist):
-			return response.Error(
-				c,
-				http.StatusConflict,
-				err.Error(),
-			)
 		default:
 			log.Println(err)
 			return response.Error(
@@ -139,11 +127,26 @@ func (h *AuthHandler) Register(c *echo.Context) error {
 	err := h.uc.Register(c.Request().Context(), req)
 
 	if err != nil {
-		return response.Error(
-			c,
-			http.StatusInternalServerError,
-			err.Error(),
-		)
+		switch {
+		case errors.Is(err, domain.ErrEmailAlreadyExist):
+			return response.Error(
+				c,
+				http.StatusConflict,
+				err.Error(),
+			)
+		case errors.Is(err, domain.ErrUsernameAlreadyExist):
+			return response.Error(
+				c,
+				http.StatusConflict,
+				err.Error(),
+			)
+		default:
+			return response.Error(
+				c,
+				http.StatusInternalServerError,
+				err.Error(),
+			)
+		}
 	}
 
 	return response.Success(

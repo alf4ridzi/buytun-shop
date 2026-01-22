@@ -120,7 +120,7 @@ func (u *authUsecaseImpl) Register(ctx context.Context, req dto.RegisterRequest)
 		return err
 	}
 
-	if !emailExist {
+	if emailExist {
 		return domain.ErrEmailAlreadyExist
 	}
 
@@ -129,7 +129,7 @@ func (u *authUsecaseImpl) Register(ctx context.Context, req dto.RegisterRequest)
 		return err
 	}
 
-	if !usernameExist {
+	if usernameExist {
 		return domain.ErrUsernameAlreadyExist
 	}
 
