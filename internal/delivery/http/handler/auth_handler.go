@@ -144,7 +144,7 @@ func (h *AuthHandler) Register(c *echo.Context) error {
 			return response.Error(
 				c,
 				http.StatusInternalServerError,
-				err.Error(),
+				"internal server error",
 			)
 		}
 	}
