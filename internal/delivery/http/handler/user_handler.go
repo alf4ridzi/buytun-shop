@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"buytun-backend/internal/helpers/response"
 	"buytun-backend/internal/usecase"
+	"net/http"
 
 	"github.com/labstack/echo/v5"
 )
@@ -15,5 +17,22 @@ func NewUserHandler(userUsecase usecase.UserUsecase) *UserHandler {
 }
 
 func (h *UserHandler) GetMe(c *echo.Context) error {
-	return nil
+	val := c.Get("user_id")
+	if val == nil {
+		return response.Error(
+			c,
+			http.StatusUnauthorized,
+			"unauthorized",
+		)
+	}
+
+	userID, ok := val.(uint)
+	if !ok {
+		return response.Error(
+			c,
+			http.StatusInternalServerError,
+			"internal server error",
+		)
+	}
+
 }

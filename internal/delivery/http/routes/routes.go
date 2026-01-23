@@ -5,6 +5,8 @@ import (
 
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
+
+	buytunmiddleware "buytun-backend/internal/delivery/http/middleware"
 )
 
 type Routes struct {
@@ -28,5 +30,8 @@ func (r *Routes) Register(router *echo.Echo) {
 	}))
 
 	r.AuthRoute.Register(api)
+
+	api.Use(buytunmiddleware.AuthMiddleware)
+
 	r.UserRoute.Register(api)
 }

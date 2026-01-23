@@ -54,7 +54,7 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 		}
 
-		val, err := strconv.ParseUint(parse.Subject, 10, 0)
+		val, err := strconv.ParseUint(parse.Subject, 10, 64)
 		if err != nil {
 			log.Println(err)
 			return response.Error(
