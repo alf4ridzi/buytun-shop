@@ -83,6 +83,9 @@ func (u *authUsecaseImpl) Login(ctx context.Context, req dto.LoginRequest) (*dto
 	}
 
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, domain.ErrInvalidAuth
+		}
 		return nil, err
 	}
 

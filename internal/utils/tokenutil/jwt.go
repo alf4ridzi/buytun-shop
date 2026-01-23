@@ -47,6 +47,28 @@ func CreateUserRefreshToken(userID string) (string, error) {
 	return token.SignedString([]byte(config.GetConfig().JwtRefreshSecret))
 }
 
+func ParseAccessToken(tokenJwt string) (*jwtUserSession, error) {
+	claims := &jwtUserSession{}
+
+	token, err := jwt.ParseWithClaims(tokenJwt, claims, func(t *jwt.Token) (any, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("error signing method")
+		}
+
+		return []byte(config.GetConfig().JwtAccessSecret), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, domain.ErrJwtInvalidToken
+	}
+
+	return claims, nil
+}
+
 func ParseRefreshToken(tokenJwt string) (*RefreshClaims, error) {
 	claims := &RefreshClaims{}
 
