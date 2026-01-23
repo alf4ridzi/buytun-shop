@@ -59,9 +59,14 @@ func registerRoutes(e *echo.Echo, db *gorm.DB) {
 	authUsecase := usecase.NewAuthUsecase(userRepo)
 	authHandler := handler.NewAuthHandler(authUsecase)
 	authRoute := routes.NewAuthRoute(authHandler)
+	// user
+	userUsecase := usecase.NewUserUsecase(userRepo)
+	userHandler := handler.NewUserHandler(userUsecase)
+	userRoute := routes.NewUserRoute(userHandler)
 
 	route := routes.Routes{
 		AuthRoute: authRoute,
+		UserRoute: userRoute,
 	}
 
 	route.Register(e)
