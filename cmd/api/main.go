@@ -53,8 +53,11 @@ func newEcho() *echo.Echo {
 }
 
 func registerRoutes(e *echo.Echo, db *gorm.DB) {
-	// repo
+	// user repo
 	userRepo := repository.NewUserRepository(db)
+	// product repo
+	productRepo := repository.NewProductRepository(db)
+
 	// auth
 	authUsecase := usecase.NewAuthUsecase(userRepo)
 	authHandler := handler.NewAuthHandler(authUsecase)
@@ -63,6 +66,10 @@ func registerRoutes(e *echo.Echo, db *gorm.DB) {
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := handler.NewUserHandler(userUsecase)
 	userRoute := routes.NewUserRoute(userHandler)
+	// product
+	productUsecase := usecase.NewProductUsecase(productRepo)
+	productHandler := handler.NewProductHandler(productUsecase)
+	productRoute := routes.NewProductRoute(productHandler)
 
 	route := routes.Routes{
 		AuthRoute: authRoute,

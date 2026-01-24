@@ -10,16 +10,19 @@ import (
 )
 
 type Routes struct {
-	UserRoute *UserRoute
-	AuthRoute *AuthRoute
+	UserRoute    *UserRoute
+	AuthRoute    *AuthRoute
+	ProductRoute *ProductRoute
 }
 
 func NewRoutes(
 	userRoute *UserRoute,
-	authRoute *AuthRoute) *Routes {
+	authRoute *AuthRoute,
+	productRoute *ProductRoute) *Routes {
 	return &Routes{
-		UserRoute: userRoute,
-		AuthRoute: authRoute,
+		UserRoute:    userRoute,
+		AuthRoute:    authRoute,
+		ProductRoute: productRoute,
 	}
 }
 
@@ -34,4 +37,6 @@ func (r *Routes) Register(router *echo.Echo) {
 	api.Use(buytunmiddleware.AuthMiddleware)
 
 	r.UserRoute.Register(api)
+
+	r.ProductRoute.Register(api)
 }
