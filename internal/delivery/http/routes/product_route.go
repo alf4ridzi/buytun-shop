@@ -17,5 +17,6 @@ func NewProductRoute(handler *handler.ProductHandler) *ProductRoute {
 }
 
 func (r *ProductRoute) Register(rg *echo.Group) {
-
+	product := rg.Group("/products")
+	product.POST("", r.Handler.NewProduct)
 }

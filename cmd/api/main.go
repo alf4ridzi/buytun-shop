@@ -72,8 +72,9 @@ func registerRoutes(e *echo.Echo, db *gorm.DB) {
 	productRoute := routes.NewProductRoute(productHandler)
 
 	route := routes.Routes{
-		AuthRoute: authRoute,
-		UserRoute: userRoute,
+		AuthRoute:    authRoute,
+		UserRoute:    userRoute,
+		ProductRoute: productRoute,
 	}
 
 	route.Register(e)
