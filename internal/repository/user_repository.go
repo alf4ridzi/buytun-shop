@@ -8,6 +8,7 @@ import (
 )
 
 type UserRepository interface {
+	Update(ctx context.Context, user *model.User) error
 	IsExistByEmail(ctx context.Context, email string) (bool, error)
 	IsExistByUsername(ctx context.Context, username string) (bool, error)
 	FindByID(ctx context.Context, id uint) (*model.User, error)
@@ -25,6 +26,10 @@ type userRepositoryImpl struct {
 
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepositoryImpl{DB: db}
+}
+
+func (r *userRepositoryImpl) Update(ctx context.Context, user *model.User) error {
+	return r.DB.WithContext(ctx).Updates(user).Error
 }
 
 func (r *userRepositoryImpl) IsExistByEmail(ctx context.Context, email string) (bool, error) {
