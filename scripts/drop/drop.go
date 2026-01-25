@@ -2,19 +2,13 @@ package main
 
 import (
 	"buytun-backend/internal/config"
-	"buytun-backend/internal/domain/model"
+	"buytun-backend/internal/domain"
 	"buytun-backend/internal/infrastructure/postgresql"
 	"log"
+	"slices"
 
 	"gorm.io/gorm"
 )
-
-func migration(db *gorm.DB) error {
-	return db.AutoMigrate(
-		&model.User{},
-		&model.Product{},
-	)
-}
 
 func mustinitdb() (*gorm.DB, error) {
 	db, err := postgresql.NewPostgresDB()
@@ -36,17 +30,9 @@ func main() {
 
 	defer closedb(db)
 
-	// var user string
+	reverse := domain.MIGRATION
 
-	// err = db.Raw("select current_user").Scan(&user).Error
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	slices.Reverse(reverse)
 
-	// log.Println(user)
-
-	err = migration(db)
-	if err != nil {
-		log.Fatal(err)
-	}
+	db.Migrator().DropTable(reverse...)
 }
