@@ -4,10 +4,12 @@ import (
 	"buytun-backend/internal/domain/model"
 	"context"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
+	FindByPublicID(ctx context.Context, publicID uuid.UUID) (*model.User, error)
 	Update(ctx context.Context, user *model.User) error
 	IsExistByEmail(ctx context.Context, email string) (bool, error)
 	IsExistByUsername(ctx context.Context, username string) (bool, error)
@@ -30,6 +32,12 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 
 func (r *userRepositoryImpl) Update(ctx context.Context, user *model.User) error {
 	return r.DB.WithContext(ctx).Updates(user).Error
+}
+
+func (r *userRepositoryImpl) FindByPublicID(ctx context.Context, publicID uuid.UUID) (*model.User, error) {
+	var user model.User
+	err := r.DB.WithContext(ctx).First(&user, "public_id = ?", publicID).Error
+	return &user, err
 }
 
 func (r *userRepositoryImpl) IsExistByEmail(ctx context.Context, email string) (bool, error) {

@@ -4,8 +4,10 @@ import (
 	"buytun-backend/internal/delivery/http/dto"
 	"buytun-backend/internal/helpers/response"
 	"buytun-backend/internal/usecase"
+	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v5"
 )
 
@@ -20,10 +22,41 @@ func NewProductHandler(uc usecase.ProductUsecase) *ProductHandler {
 func (h *ProductHandler) GetProductByUser(c *echo.Context) error {
 	userPublicID := c.Param("id")
 
+	if userPublicID == "" {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			"user id tidak ada",
+		)
+	}
+
+	userPublicUUID, err := uuid.Parse(userPublicID)
+	if err != nil {
+		return response.Error(
+			c,
+			http.StatusBadRequest,
+			"id tidak valid",
+		)
+	}
+
+	products, err := h.uc.GetProductByUserID(
+		c.Request().Context(),
+		userPublicUUID,
+	)
+
+	if err != nil {
+		log.Println(err)
+		return response.Error(
+			c,
+			http.StatusInternalServerError,
+			"internal server error",
+		)
+	}
+
 	return response.Success(
 		c,
-		"ok",
-		userPublicID,
+		"berhasil mendapatkan product",
+		products,
 	)
 }
 

@@ -13,7 +13,8 @@ type UserRoute struct {
 
 func NewUserRoute(handler *handler.UserHandler, productHandler *handler.ProductHandler) *UserRoute {
 	return &UserRoute{
-		Handler: handler,
+		Handler:        handler,
+		ProductHandler: productHandler,
 	}
 }
 

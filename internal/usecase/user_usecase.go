@@ -61,8 +61,8 @@ func (u *userUsecaseImpl) GetUserProfile(ctx context.Context, userID uint) (*dto
 		Name:      user.Name,
 		Username:  user.Username,
 		Email:     user.Email,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		CreatedAt: &user.CreatedAt,
+		UpdatedAt: &user.UpdatedAt,
 	}
 
 	return response, nil
