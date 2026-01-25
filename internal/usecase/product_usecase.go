@@ -7,7 +7,9 @@ import (
 	"context"
 )
 
-type ProductUsecase interface{}
+type ProductUsecase interface {
+	AddNewProduct(ctx context.Context, userID uint, req dto.NewProductRequest) (*dto.ProductResponse, error)
+}
 
 type productUsecaseImpl struct {
 	repo repository.ProductRepository
@@ -17,7 +19,7 @@ func NewProductUsecase(repo repository.ProductRepository) ProductUsecase {
 	return &productUsecaseImpl{repo: repo}
 }
 
-func (u *productUsecaseImpl) AddNewProduct(ctx context.Context, userID uint, req dto.NewProductRequest) {
+func (u *productUsecaseImpl) AddNewProduct(ctx context.Context, userID uint, req dto.NewProductRequest) (*dto.ProductResponse, error) {
 	product := &model.Product{
 		Name:        req.Name,
 		Description: req.Description,
@@ -26,4 +28,18 @@ func (u *productUsecaseImpl) AddNewProduct(ctx context.Context, userID uint, req
 		UserID:      userID,
 	}
 
+	err := u.repo.Create(ctx, product)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &dto.ProductResponse{
+		Name:        product.Name,
+		Description: product.Description,
+		Price:       product.Price,
+		Stock:       product.Stock,
+		Slug:        product.Slug,
+	}
+
+	return resp, nil
 }

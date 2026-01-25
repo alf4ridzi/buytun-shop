@@ -1,6 +1,7 @@
 package model
 
 import (
+	"buytun-backend/internal/utils/slugutil"
 	"time"
 
 	"gorm.io/gorm"
@@ -23,5 +24,7 @@ type Product struct {
 }
 
 func (p *Product) BeforeCreate(tx *gorm.DB) error {
+	p.Slug = slugutil.GenerateProductSlug(p.Name)
+
 	return nil
 }

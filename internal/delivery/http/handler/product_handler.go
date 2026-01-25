@@ -35,5 +35,42 @@ func (h *ProductHandler) NewProduct(c *echo.Context) error {
 		)
 	}
 
-	return nil
+	userIDVal := c.Get("user_id")
+
+	if userIDVal == nil {
+		return response.Error(
+			c,
+			http.StatusUnauthorized,
+			"unauthorized",
+		)
+	}
+
+	userID, ok := userIDVal.(uint)
+	if !ok {
+		return response.Error(
+			c,
+			http.StatusInternalServerError,
+			"internal server error",
+		)
+	}
+
+	resp, err := h.uc.AddNewProduct(
+		c.Request().Context(),
+		userID,
+		req,
+	)
+
+	if err != nil {
+		return response.Error(
+			c,
+			http.StatusInternalServerError,
+			"internal server error",
+		)
+	}
+
+	return response.Success(
+		c,
+		"berhasil membuat product baru",
+		resp,
+	)
 }
