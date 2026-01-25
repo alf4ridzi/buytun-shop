@@ -7,10 +7,11 @@ import (
 )
 
 type UserRoute struct {
-	Handler *handler.UserHandler
+	Handler        *handler.UserHandler
+	ProductHandler *handler.ProductHandler
 }
 
-func NewUserRoute(handler *handler.UserHandler) *UserRoute {
+func NewUserRoute(handler *handler.UserHandler, productHandler *handler.ProductHandler) *UserRoute {
 	return &UserRoute{
 		Handler: handler,
 	}
@@ -20,4 +21,7 @@ func (r *UserRoute) Register(rg *echo.Group) {
 	users := rg.Group("/users")
 	users.GET("/profile", r.Handler.GetMe)
 	users.PUT("/profile", r.Handler.UpdateUser)
+
+	// product
+	users.GET("/:id/products", r.ProductHandler.GetProductByUser)
 }

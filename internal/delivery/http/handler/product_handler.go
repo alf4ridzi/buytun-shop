@@ -18,7 +18,13 @@ func NewProductHandler(uc usecase.ProductUsecase) *ProductHandler {
 }
 
 func (h *ProductHandler) GetProductByUser(c *echo.Context) error {
-	return nil
+	userPublicID := c.Param("id")
+
+	return response.Success(
+		c,
+		"ok",
+		userPublicID,
+	)
 }
 
 func (h *ProductHandler) NewProduct(c *echo.Context) error {

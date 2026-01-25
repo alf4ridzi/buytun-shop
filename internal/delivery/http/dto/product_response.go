@@ -1,13 +1,18 @@
 package dto
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type ProductResponse struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Slug        string `json:"slug"`
-	Price       uint64 `json:"price"`
-	Stock       uint64 `json:"stock"`
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Slug        string    `json:"slug"`
+	Price       uint64    `json:"price"`
+	Stock       uint64    `json:"stock"`
 
 	Seller *UserResponse `json:"seller,omitempty"`
 

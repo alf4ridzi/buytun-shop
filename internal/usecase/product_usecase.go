@@ -34,6 +34,7 @@ func (u *productUsecaseImpl) AddNewProduct(ctx context.Context, userID uint, req
 	}
 
 	resp := &dto.ProductResponse{
+		ID:          product.ID,
 		Name:        product.Name,
 		Description: product.Description,
 		Price:       product.Price,
