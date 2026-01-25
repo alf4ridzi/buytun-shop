@@ -39,6 +39,8 @@ func (u *productUsecaseImpl) AddNewProduct(ctx context.Context, userID uint, req
 		Price:       product.Price,
 		Stock:       product.Stock,
 		Slug:        product.Slug,
+		CreatedAt:   product.CreatedAt,
+		UpdatedAt:   product.UpdatedAt,
 	}
 
 	return resp, nil

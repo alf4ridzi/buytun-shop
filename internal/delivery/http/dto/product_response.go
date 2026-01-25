@@ -9,8 +9,8 @@ type ProductResponse struct {
 	Price       uint64 `json:"price"`
 	Stock       uint64 `json:"stock"`
 
-	Seller *UserResponse `json:"seller"`
+	Seller *UserResponse `json:"seller,omitempty"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

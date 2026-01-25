@@ -17,6 +17,10 @@ func NewProductHandler(uc usecase.ProductUsecase) *ProductHandler {
 	return &ProductHandler{uc: uc}
 }
 
+func (h *ProductHandler) GetProductByUser(c *echo.Context) error {
+	return nil
+}
+
 func (h *ProductHandler) NewProduct(c *echo.Context) error {
 	var req dto.NewProductRequest
 	if err := c.Bind(&req); err != nil {
