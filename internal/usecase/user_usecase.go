@@ -57,6 +57,7 @@ func (u *userUsecaseImpl) GetUserProfile(ctx context.Context, userID uint) (*dto
 	}
 
 	response := &dto.UserResponse{
+		ID:        user.PublicID,
 		Name:      user.Name,
 		Username:  user.Username,
 		Email:     user.Email,

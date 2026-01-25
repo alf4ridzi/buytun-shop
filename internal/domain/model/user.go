@@ -5,11 +5,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID       uint `gorm:"primaryKey"`
+	ID       uint      `gorm:"primaryKey"`
+	PublicID uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();uniqueIndex:idx_public_id"`
 	Name     string
 	Email    string `gorm:"type:varchar(100);uniqueIndex:uq_email_user;not null"`
 	Username string `gorm:"type:varchar(100);uniqueIndex:uq_username_user; not null"`
