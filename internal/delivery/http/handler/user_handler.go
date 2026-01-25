@@ -135,5 +135,4 @@ func (h *UserHandler) GetMe(c *echo.Context) error {
 		"berhasil mendapatkan user",
 		resp,
 	)
-
 }
