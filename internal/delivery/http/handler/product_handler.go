@@ -4,11 +4,13 @@ import (
 	"buytun-backend/internal/delivery/http/dto"
 	"buytun-backend/internal/helpers/response"
 	"buytun-backend/internal/usecase"
+	"errors"
 	"log"
 	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v5"
+	"gorm.io/gorm"
 )
 
 type ProductHandler struct {
@@ -17,6 +19,10 @@ type ProductHandler struct {
 
 func NewProductHandler(uc usecase.ProductUsecase) *ProductHandler {
 	return &ProductHandler{uc: uc}
+}
+
+func (h *ProductHandler) Update(c *echo.Context) error {
+	return nil
 }
 
 func (h *ProductHandler) GetProductByUser(c *echo.Context) error {
@@ -45,12 +51,21 @@ func (h *ProductHandler) GetProductByUser(c *echo.Context) error {
 	)
 
 	if err != nil {
-		log.Println(err)
-		return response.Error(
-			c,
-			http.StatusInternalServerError,
-			"internal server error",
-		)
+		switch {
+		case errors.Is(err, gorm.ErrRecordNotFound):
+			return response.Error(
+				c,
+				http.StatusNotFound,
+				"product tidak ditemukan",
+			)
+		default:
+			log.Println(err)
+			return response.Error(
+				c,
+				http.StatusInternalServerError,
+				"internal server error",
+			)
+		}
 	}
 
 	return response.Success(

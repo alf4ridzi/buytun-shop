@@ -47,6 +47,10 @@ func (u *userUsecaseImpl) UpdateUserProfile(ctx context.Context,
 		user.Username = *req.Username
 	}
 
+	if req.PhoneNumber != nil {
+		user.PhoneNumber = *req.PhoneNumber
+	}
+
 	return u.userRepository.Update(ctx, user)
 }
 
@@ -57,12 +61,13 @@ func (u *userUsecaseImpl) GetUserProfile(ctx context.Context, userID uint) (*dto
 	}
 
 	response := &dto.UserResponse{
-		ID:        user.PublicID,
-		Name:      user.Name,
-		Username:  user.Username,
-		Email:     user.Email,
-		CreatedAt: &user.CreatedAt,
-		UpdatedAt: &user.UpdatedAt,
+		ID:          user.PublicID,
+		Name:        user.Name,
+		Username:    user.Username,
+		Email:       user.Email,
+		PhoneNumber: user.PhoneNumber,
+		CreatedAt:   &user.CreatedAt,
+		UpdatedAt:   &user.UpdatedAt,
 	}
 
 	return response, nil

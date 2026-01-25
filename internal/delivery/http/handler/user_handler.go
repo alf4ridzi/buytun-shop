@@ -23,6 +23,7 @@ func NewUserHandler(userUsecase usecase.UserUsecase) *UserHandler {
 func (h *UserHandler) UpdateUser(c *echo.Context) error {
 	var req dto.UserUpdateRequest
 	if err := c.Bind(&req); err != nil {
+		log.Println(err)
 		return response.Error(
 			c,
 			http.StatusInternalServerError,
@@ -53,7 +54,7 @@ func (h *UserHandler) UpdateUser(c *echo.Context) error {
 		return response.Error(
 			c,
 			http.StatusInternalServerError,
-			"internal server error",
+			"internal server error userid",
 		)
 	}
 
